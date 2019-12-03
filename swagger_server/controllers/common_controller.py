@@ -91,7 +91,6 @@ def getAudioPath(fid):
 
 def checkOpenID():
     # for debug
-    flask.session["open_id"] = "o1N-yjsCLeEzys5JrC-9_dV0Mr7s"
     if "open_id" not in flask.session:
         sess_id = flask.request.cookies.get("PHPSESSID")
         if sess_id is not None:
