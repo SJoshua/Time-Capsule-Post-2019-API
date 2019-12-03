@@ -1,0 +1,225 @@
+openapi: 3.0.0
+info:
+  title: Time Capsule Post 2019 API
+  description: For Time Capsule 2019. Please call WeChat API for authorization first.
+  contact:
+    email: joshuasrkf@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/VegetableP/Time-Capsule-Post-2019/1.0.0
+  description: SwaggerHub API Auto Mocking
+tags:
+- name: common
+  description: available calls
+paths:
+  /info:
+    get:
+      tags:
+      - common
+      summary: Get user's info
+      operationId: info_get
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+              example:
+                participated: true
+        "401":
+          description: You must call WeChat API fist
+      x-openapi-router-controller: swagger_server.controllers.common_controller
+  /time_capsules:
+    get:
+      tags:
+      - common
+      summary: Get time capsules received by qrcode
+      operationId: time_capsules_get
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/time_capsule'
+                x-content-type: application/json
+              example:
+              - from: A1
+                to: B
+                content: Hello.
+                time: 1575265269
+              - from: A2
+                to: B
+                content: Moew.
+                time: 1575265229
+        "401":
+          description: You must call WeChat API fist
+      x-openapi-router-controller: swagger_server.controllers.common_controller
+  /time_capsule/{code}:
+    get:
+      tags:
+      - common
+      summary: Get time capsule by code
+      operationId: time_capsule_code_get
+      parameters:
+      - name: code
+        in: path
+        description: capsule code
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maxLength: 6
+          minLength: 6
+          type: string
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/time_capsule'
+        "401":
+          description: You must call WeChat API fist
+        "404":
+          description: Not found
+      x-openapi-router-controller: swagger_server.controllers.common_controller
+  /question_capsules:
+    get:
+      tags:
+      - common
+      summary: Get question capsules
+      operationId: question_capsules_get
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/question_capsule'
+                x-content-type: application/json
+              example:
+              - id: 10
+                question: What's your name?
+                answer: Joshua
+                new_answer: SJoshua
+                time: 1575366480
+              - id: 12
+                question: What's your name?
+                answer: Jack
+                time: 1575366490
+        "401":
+          description: You must call WeChat API fist
+      x-openapi-router-controller: swagger_server.controllers.common_controller
+  /question_capsule/{cid}:
+    post:
+      tags:
+      - common
+      summary: Post new answer for question capsules
+      operationId: question_capsule_cid_post
+      parameters:
+      - name: cid
+        in: path
+        description: capsule id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body'
+            example:
+              answer: My new answer for question capsule.
+        required: true
+      responses:
+        "200":
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/question_capsule'
+                x-content-type: application/json
+        "401":
+          description: You must call WeChat API fist
+        "404":
+          description: Not found
+      x-openapi-router-controller: swagger_server.controllers.common_controller
+components:
+  schemas:
+    time_capsule:
+      type: object
+      properties:
+        from:
+          type: string
+          description: sender's name
+        to:
+          type: string
+          description: receiver's name
+        type:
+          type: string
+          description: content type
+          enum:
+          - text
+          - audio
+        content:
+          type: string
+          description: content of capsule
+        time:
+          type: integer
+          description: timestamp
+      example:
+        from: Joshua
+        to: SJoshua
+        type: text
+        content: My Message
+        time: 1575366556
+    question_capsule:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: capsule id
+        question:
+          type: string
+          description: the question
+        answer:
+          type: string
+          description: user's answer before
+        new_answer:
+          type: string
+          description: user's new answer
+        time:
+          type: integer
+          description: timestamp
+      example:
+        cid: 10
+        question: What's your name?
+        answer: Joshua
+        new_answer: SJoshua
+        time: 1575366480
+    inline_response_200:
+      type: object
+      properties:
+        participated:
+          type: boolean
+      example:
+        participated: true
+    body:
+      type: object
+      properties:
+        answer:
+          type: string
+
