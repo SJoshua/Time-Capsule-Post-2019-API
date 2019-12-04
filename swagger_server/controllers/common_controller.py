@@ -37,7 +37,7 @@ class database:
         r = cur.fetchone()
         cur.close()
         con.close()
-        return r and [r[0], str(r[1], 'utf-8'), str(r[2], 'utf-8'), str(r[3], 'utf-8')]
+        return r and [r[0], str(r[1], 'utf-8'), str(r[2], 'utf-8')]
 
     def getNameByID(uid):
         (con, cur) = database.getCursor()
@@ -90,7 +90,6 @@ def getAudioPath(fid):
     return cfg["media"] % hashlib.md5(fid.decode("utf-8").encode(encoding = 'utf-8')).hexdigest()
 
 def checkOpenID():
-    # for debug
     if "open_id" not in flask.session:
         sess_id = flask.request.cookies.get("PHPSESSID")
         if sess_id is not None:
@@ -199,7 +198,7 @@ def time_capsules_get():  # noqa: E501
     u_info = database.getInfo(flask.session.get("open_id"))
     if u_info is None:
         return "Not found", 404
-    info = database.getTimeCapsules(u_info[3])
+    info = database.getTimeCapsules(u_info[2])
     ret = []
     for e in info:
         ret.append({
