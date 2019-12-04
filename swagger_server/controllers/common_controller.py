@@ -37,7 +37,7 @@ class database:
         r = cur.fetchone()
         cur.close()
         con.close()
-        return r and [r[0], str(r[1], 'utf-8'), str(r[2], 'utf-8')]
+        return r and [r[0], str(r[1], 'utf-8'), str(r[2], 'utf-8'), str(r[3], 'utf-8')]
 
     def getNameByID(uid):
         (con, cur) = database.getCursor()
@@ -47,10 +47,10 @@ class database:
         con.close()
         return r and r[0]
 
-    def getTimeCapsules(uid):
+    def getTimeCapsules(tel):
         (con, cur) = database.getCursor()
-        cur.execute("SELECT * FROM time_capsules WHERE receiver_id = ? and period = ?", [uid, cfg["period"]])
-        r = cur.fetchall() 
+        cur.execute("SELECT * FROM time_capsules WHERE receiver_tel = ? and period = ?", [tel, cfg["period"]])
+        r = cur.fetchall()
         cur.close()
         con.close()
         return r
@@ -199,7 +199,7 @@ def time_capsules_get():  # noqa: E501
     u_info = database.getInfo(flask.session.get("open_id"))
     if u_info is None:
         return "Not found", 404
-    info = database.getTimeCapsules(u_info[0])
+    info = database.getTimeCapsules(u_info[3])
     ret = []
     for e in info:
         ret.append({
