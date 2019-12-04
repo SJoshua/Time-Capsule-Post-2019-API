@@ -49,7 +49,7 @@ class database:
 
     def getTimeCapsules(uid):
         (con, cur) = database.getCursor()
-        cur.execute("SELECT * FROM time_capsules WHERE sender_id = ? and period = 'half-year'", [uid])
+        cur.execute("SELECT * FROM time_capsules WHERE receiver_id = ? and period = ?", [uid, cfg["period"]])
         r = cur.fetchall() 
         cur.close()
         con.close()
@@ -57,7 +57,7 @@ class database:
     
     def getTimeCapsuleByCode(code):
         (con, cur) = database.getCursor()
-        cur.execute("SELECT * FROM time_capsules WHERE code = ? and period = 'half-year'", [code])
+        cur.execute("SELECT * FROM time_capsules WHERE code = ? and period = ?", [code, cfg["period"]])
         r = cur.fetchone()
         cur.close()
         con.close()
@@ -65,7 +65,7 @@ class database:
 
     def getQuestionCapsules(uid):
         (con, cur) = database.getCursor()
-        cur.execute("SELECT * FROM question_capsules WHERE sender_id = ? and period = 'half-year'", [uid])
+        cur.execute("SELECT * FROM question_capsules WHERE sender_id = ? and period = ?", [uid, cfg["period"]])
         r = cur.fetchall() 
         cur.close()
         con.close()
@@ -73,7 +73,7 @@ class database:
     
     def getQuestionCapsuleByID(uid, cid):
         (con, cur) = database.getCursor()
-        cur.execute("SELECT * FROM question_capsules WHERE sender_id = ? and capsule_id = ? and period = 'half-year'", [uid, cid])
+        cur.execute("SELECT * FROM question_capsules WHERE sender_id = ? and capsule_id = ? and period = ?", [uid, cid, cfg["period"]])
         r = cur.fetchone() 
         cur.close()
         con.close()
@@ -81,7 +81,7 @@ class database:
     
     def updateQuestionCapsule(id, ans):
         (con, cur) = database.getCursor()
-        cur.execute("UPDATE question_capsules SET NEW_MESSAGE = ? WHERE capsule_id = ? and period = 'half-year'", [ans, id])
+        cur.execute("UPDATE question_capsules SET NEW_MESSAGE = ? WHERE capsule_id = ? and period = ?", [ans, id, cfg["period"]])
         cur.close()
         con.commit()
         con.close()
